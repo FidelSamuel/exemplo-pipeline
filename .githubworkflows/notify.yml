@@ -1,0 +1,25 @@
+ notify:
+    runs-on: ubuntu-latest
+    needs: build
+    if: always()
+
+    steps:
+      - name: Enviar Notificação para Slack em caso de falha
+        uses: rtCamp/action-slack-notify@v2
+        if: ${{ failure() }}
+        with:
+          status: failure
+          message: "O pipeline de CI/CD falhou para o projeto XYZ. Verifique o log para mais detalhes."
+          channel: ${{ secrets.SLACK_CHANNEL }}
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          mention-users: "<@user1>, <@user2>"
+      
+      - name: Enviar Notificação para Slack em caso de sucesso
+        uses: rtCamp/action-slack-notify@v2
+        if: ${{ success() }}
+        with:
+          status: success
+          message: "O pipeline de CI/CD foi concluído com sucesso para o projeto XYZ."
+          channel: ${{ secrets.SLACK_CHANNEL }}
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          mention-users: "<@user1>, <@user2>"
